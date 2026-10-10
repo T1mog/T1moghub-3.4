@@ -1,0 +1,652 @@
+--[========================================================]--
+-- Script: T1moghub v3.4 // MM2 Master (Delta Optimized)
+-- Engineer: TWKS
+--[========================================================]--
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+local CoreGui = game:GetService("CoreGui")
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+
+local LocalPlayer = Players.LocalPlayer
+local Camera = Workspace.CurrentCamera
+
+------------------------------------------------------------------
+-- 0. УЛЬТРА-ПРЕМИУМ ЭКРАН ЗАГРУЗКИ / ПРИВЕТСТВИЕ
+------------------------------------------------------------------
+local LoadGui = Instance.new("ScreenGui")
+LoadGui.Name = "T1moghub_UltraWelcome"
+LoadGui.Parent = CoreGui
+LoadGui.ResetOnSpawn = false
+
+local LoadFrame = Instance.new("Frame")
+LoadFrame.Name = "LoadFrame"
+LoadFrame.Parent = LoadGui
+LoadFrame.BackgroundColor3 = Color3.fromRGB(12, 14, 20)
+LoadFrame.BorderSizePixel = 0
+LoadFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+LoadFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+LoadFrame.Size = UDim2.new(0, 0, 0, 0)
+LoadFrame.ClipsDescendants = true
+
+local LoadCorner = Instance.new("UICorner")
+LoadCorner.CornerRadius = UDim.new(0, 16)
+LoadCorner.Parent = LoadFrame
+
+local LoadStroke = Instance.new("UIStroke")
+LoadStroke.Parent = LoadFrame
+LoadStroke.Thickness = 2.5
+LoadStroke.Color = Color3.fromRGB(0, 170, 255)
+
+local LoadGradient = Instance.new("UIGradient")
+LoadGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(15, 20, 32)),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(25, 18, 38)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(10, 12, 18))
+})
+LoadGradient.Rotation = 45
+LoadGradient.Parent = LoadFrame
+
+local LoadText = Instance.new("TextLabel")
+LoadText.Parent = LoadFrame
+LoadText.BackgroundTransparency = 1
+LoadText.Position = UDim2.new(0, 0, 0, 12)
+LoadText.Size = UDim2.new(1, 0, 0, 30)
+LoadText.Font = Enum.Font.GothamBold
+LoadText.Text = "⚡ Добро пожаловать в T1mog hub ⚡"
+LoadText.TextColor3 = Color3.fromRGB(255, 255, 255)
+LoadText.TextSize = 16
+LoadText.TextTransparency = 1
+
+local TextGradient = Instance.new("UIGradient")
+TextGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(80, 200, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(180, 100, 255))
+})
+TextGradient.Parent = LoadText
+
+local SubText = Instance.new("TextLabel")
+SubText.Parent = LoadFrame
+SubText.BackgroundTransparency = 1
+SubText.Position = UDim2.new(0, 0, 0, 42)
+SubText.Size = UDim2.new(1, 0, 0, 20)
+SubText.Font = Enum.Font.GothamSemibold
+SubText.Text = "Загрузка скриптов и обхода..."
+SubText.TextColor3 = Color3.fromRGB(160, 175, 200)
+SubText.TextSize = 11
+SubText.TextTransparency = 1
+
+local BarBackground = Instance.new("Frame")
+BarBackground.Parent = LoadFrame
+BarBackground.BackgroundColor3 = Color3.fromRGB(25, 30, 42)
+BarBackground.BorderSizePixel = 0
+BarBackground.Position = UDim2.new(0.08, 0, 0.78, 0)
+BarBackground.Size = UDim2.new(0.84, 0, 0, 6)
+
+local BarBgCorner = Instance.new("UICorner")
+BarBgCorner.CornerRadius = UDim.new(1, 0)
+BarBgCorner.Parent = BarBackground
+
+local BarFill = Instance.new("Frame")
+BarFill.Parent = BarBackground
+BarFill.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+BarFill.BorderSizePixel = 0
+BarFill.Size = UDim2.new(0, 0, 1, 0)
+
+local BarFillCorner = Instance.new("UICorner")
+BarFillCorner.CornerRadius = UDim.new(1, 0)
+BarFillCorner.Parent = BarFill
+
+local BarFillGradient = Instance.new("UIGradient")
+BarFillGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 210, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(160, 50, 255))
+})
+BarFillGradient.Parent = BarFill
+
+task.spawn(function()
+    while LoadGui.Parent do
+        TweenService:Create(LoadStroke, TweenInfo.new(1.2, Enum.EasingStyle.Sin, Enum.EasingDirection.InOut), {Color = Color3.fromRGB(160, 80, 255)}):Play()
+        task.wait(1.2)
+        TweenService:Create(LoadStroke, TweenInfo.new(1.2, Enum.EasingStyle.Sin, Enum.EasingDirection.InOut), {Color = Color3.fromRGB(0, 200, 255)}):Play()
+        task.wait(1.2)
+    end
+end)
+
+LoadFrame:TweenSize(UDim2.new(0, 400, 0, 105), Enum.EasingDirection.Out, Enum.EasingStyle.Back, 0.5, true)
+task.wait(0.3)
+TweenService:Create(LoadText, TweenInfo.new(0.4), {TextTransparency = 0}):Play()
+TweenService:Create(SubText, TweenInfo.new(0.4), {TextTransparency = 0}):Play()
+BarFill:TweenSize(UDim2.new(1, 0, 1, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 1.8, true)
+task.wait(2.2)
+
+TweenService:Create(LoadText, TweenInfo.new(0.3), {TextTransparency = 1}):Play()
+TweenService:Create(SubText, TweenInfo.new(0.3), {TextTransparency = 1}):Play()
+LoadFrame:TweenSize(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.In, Enum.EasingStyle.Quad, 0.4, true)
+task.wait(0.4)
+LoadGui:Destroy()
+
+------------------------------------------------------------------
+-- СОСТОЯНИЯ МОДУЛЕЙ
+------------------------------------------------------------------
+local espEnabled = false
+local boxEspEnabled = false
+local arrowEspEnabled = false
+local wallBangEnabled = false
+local hitboxEnabled = false
+local noclipEnabled = false
+local coinsEnabled = false
+local spinEnabled = false
+local antiAimEnabled = false
+local shootMurderEnabled = false
+local autoGunEnabled = false
+local flingSheriffEnabled = false
+local flingMurderEnabled = false
+local speedGlitchEnabled = false
+local bombJumpEnabled = false
+local flyEnabled = false
+local flySpeed = 50
+local skinChangerEnabled = false
+
+local godlySets = {"Corrupt Set", "Harvester Set", "Darkbringer / Lightbringer", "Icepiercer Set", "Evergun / Everschythe", "Candy Set", "Bat Set", "Elderwood Set"}
+local currentSetIndex = 1
+local currentAngle = 0
+local spinSpeed = 35
+local espCache = {}
+local arrowCache = {}
+
+------------------------------------------------------------------
+-- ОСНОВНОЙ GUI (T1moghub)
+------------------------------------------------------------------
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "T1moghub_Ultimate"
+ScreenGui.Parent = CoreGui
+ScreenGui.ResetOnSpawn = false
+
+-- Виджет-иконка быстрого доступа (Слева)
+local HubIconWidget = Instance.new("TextButton")
+HubIconWidget.Name = "HubIconWidget"
+HubIconWidget.Parent = ScreenGui
+HubIconWidget.BackgroundColor3 = Color3.fromRGB(15, 18, 25)
+HubIconWidget.Position = UDim2.new(0.01, 0, 0.32, 0)
+HubIconWidget.Size = UDim2.new(0, 52, 0, 52)
+HubIconWidget.Font = Enum.Font.GothamBold
+HubIconWidget.Text = "T1"
+HubIconWidget.TextColor3 = Color3.fromRGB(80, 160, 255)
+HubIconWidget.TextSize = 18
+HubIconWidget.Active = true
+HubIconWidget.Draggable = true
+
+local WidgetCorner = Instance.new("UICorner")
+WidgetCorner.CornerRadius = UDim.new(0, 14)
+WidgetCorner.Parent = HubIconWidget
+
+local WidgetStroke = Instance.new("UIStroke")
+WidgetStroke.Parent = HubIconWidget
+WidgetStroke.Thickness = 2.5
+WidgetStroke.Color = Color3.fromRGB(80, 160, 255)
+
+-- Мобильные оверлей-кнопки
+local function createOverlayButton(name, text, defaultPos, callback)
+    local btnFrame = Instance.new("Frame")
+    btnFrame.Name = name .. "_OverlayBtn"
+    btnFrame.Parent = ScreenGui
+    btnFrame.BackgroundColor3 = Color3.fromRGB(10, 12, 18)
+    btnFrame.BackgroundTransparency = 0.4
+    btnFrame.Position = defaultPos
+    btnFrame.Size = UDim2.new(0, 80, 0, 80)
+    btnFrame.Active = true
+    btnFrame.Draggable = true
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 16)
+    corner.Parent = btnFrame
+
+    local stroke = Instance.new("UIStroke")
+    stroke.Parent = btnFrame
+    stroke.Thickness = 2
+    stroke.Color = Color3.fromRGB(80, 255, 180)
+
+    local btn = Instance.new("TextButton")
+    btn.Parent = btnFrame
+    btn.BackgroundTransparency = 1
+    btn.Size = UDim2.new(1, 0, 1, 0)
+    btn.Font = Enum.Font.GothamBold
+    btn.Text = text
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.TextSize = 12
+    btn.TextWrapped = true
+
+    local toggled = false
+    btn.MouseButton1Click:Connect(function()
+        toggled = not toggled
+        if toggled then
+            stroke.Color = Color3.fromRGB(80, 255, 80)
+            btnFrame.BackgroundColor3 = Color3.fromRGB(0, 120, 60)
+        else
+            stroke.Color = Color3.fromRGB(80, 255, 180)
+            btnFrame.BackgroundColor3 = Color3.fromRGB(10, 12, 18)
+        end
+        callback(toggled)
+    end)
+    return btnFrame
+end
+
+createOverlayButton("Shoot", "🎯\nSHOOT", UDim2.new(0.08, 0, 0.62, 0), function(active) shootMurderEnabled = active end)
+createOverlayButton("Speed", "⚡\nSPEED", UDim2.new(0.82, 0, 0.12, 0), function(active) speedGlitchEnabled = active end)
+createOverlayButton("NoSheriff", "🛡️\nNO SHER", UDim2.new(0.22, 0, 0.25, 0), function(active) flingSheriffEnabled = active end)
+createOverlayButton("NoGun", "🔫\nNO GUN", UDim2.new(0.45, 0, 0.80, 0), function(active) autoGunEnabled = active end)
+
+-- Главное окно
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(18, 22, 30)
+MainFrame.BorderSizePixel = 0
+MainFrame.Position = UDim2.new(0.5, -310, 0.5, -200)
+MainFrame.Size = UDim2.new(0, 620, 0, 400)
+MainFrame.Active = true
+MainFrame.Draggable = true
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 12)
+MainCorner.Parent = MainFrame
+
+local MainStroke = Instance.new("UIStroke")
+MainStroke.Parent = MainFrame
+MainStroke.Thickness = 1.5
+MainStroke.Color = Color3.fromRGB(50, 65, 95)
+
+local TopBar = Instance.new("Frame")
+TopBar.Parent = MainFrame
+TopBar.BackgroundColor3 = Color3.fromRGB(14, 17, 24)
+TopBar.BorderSizePixel = 0
+TopBar.Size = UDim2.new(1, 0, 0, 42)
+
+local TopCorner = Instance.new("UICorner")
+TopCorner.CornerRadius = UDim.new(0, 12)
+TopCorner.Parent = TopBar
+
+local Title = Instance.new("TextLabel")
+Title.Parent = TopBar
+Title.BackgroundTransparency = 1
+Title.Position = UDim2.new(0, 15, 0, 0)
+Title.Size = UDim2.new(0, 350, 1, 0)
+Title.Font = Enum.Font.GothamBold
+Title.Text = "⚡ T1mog hub // MM2 MASTER"
+Title.TextColor3 = Color3.fromRGB(240, 245, 255)
+Title.TextSize = 14
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+HubIconWidget.MouseButton1Click:Connect(function()
+    MainFrame.Visible = not MainFrame.Visible
+end)
+
+local Sidebar = Instance.new("Frame")
+Sidebar.Parent = MainFrame
+Sidebar.BackgroundColor3 = Color3.fromRGB(13, 16, 22)
+Sidebar.Position = UDim2.new(0, 0, 0, 42)
+Sidebar.Size = UDim2.new(0, 150, 1, -42)
+
+local SidebarList = Instance.new("UIListLayout")
+SidebarList.Parent = Sidebar
+SidebarList.Padding = UDim.new(0, 4)
+SidebarList.SortOrder = Enum.SortOrder.LayoutOrder
+
+local ContentArea = Instance.new("Frame")
+ContentArea.Parent = MainFrame
+ContentArea.BackgroundTransparency = 1
+ContentArea.Position = UDim2.new(0, 158, 0, 48)
+ContentArea.Size = UDim2.new(1, -165, 1, -54)
+
+local tabs = {}
+local tabButtons = {}
+
+local function createTab(name, iconText)
+    local page = Instance.new("ScrollingFrame")
+    page.Name = name .. "Page"
+    page.Parent = ContentArea
+    page.BackgroundTransparency = 1
+    page.Size = UDim2.new(1, 0, 1, 0)
+    page.Visible = false
+    page.ScrollBarThickness = 3
+    
+    local layout = Instance.new("UIListLayout")
+    layout.Parent = page
+    layout.Padding = UDim.new(0, 6)
+    
+    layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        page.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 15)
+    end)
+    
+    local btn = Instance.new("TextButton")
+    btn.Parent = Sidebar
+    btn.BackgroundColor3 = Color3.fromRGB(22, 27, 38)
+    btn.BackgroundTransparency = 1
+    btn.Size = UDim2.new(1, 0, 0, 36)
+    btn.Font = Enum.Font.GothamSemibold
+    btn.Text = "  " .. iconText .. "  " .. name
+    btn.TextColor3 = Color3.fromRGB(150, 165, 190)
+    btn.TextSize = 12
+    btn.TextXAlignment = Enum.TextXAlignment.Left
+    
+    btn.MouseButton1Click:Connect(function()
+        for _, t in pairs(tabs) do t.Visible = false end
+        for _, b in pairs(tabButtons) do 
+            b.TextColor3 = Color3.fromRGB(150, 165, 190) 
+            b.BackgroundTransparency = 1
+        end
+        page.Visible = true
+        btn.TextColor3 = Color3.fromRGB(80, 160, 255)
+        btn.BackgroundTransparency = 0.5
+    end)
+    
+    tabs[name] = page
+    table.insert(tabButtons, btn)
+    return page
+end
+
+local mainTab = createTab("Главная", "🏠")
+local combatTab = createTab("Бой", "⚔️")
+local movementTab = createTab("Движение", "🏃")
+local visualsTab = createTab("Визуал", "👁️")
+local settingsTab = createTab("Настройки", "⚙️")
+
+tabs["Главная"].Visible = true
+tabButtons[1].TextColor3 = Color3.fromRGB(80, 160, 255)
+tabButtons[1].BackgroundTransparency = 0.5
+
+local function createToggle(parent, text, defaultState, callback)
+    local frame = Instance.new("Frame")
+    frame.Parent = parent
+    frame.BackgroundColor3 = Color3.fromRGB(24, 30, 42)
+    frame.Size = UDim2.new(0.96, 0, 0, 36)
+    
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 8)
+    corner.Parent = frame
+    
+    local label = Instance.new("TextLabel")
+    label.Parent = frame
+    label.BackgroundTransparency = 1
+    label.Position = UDim2.new(0, 12, 0, 0)
+    label.Size = UDim2.new(0.7, 0, 1, 0)
+    label.Font = Enum.Font.GothamMedium
+    label.Text = text
+    label.TextColor3 = Color3.fromRGB(220, 230, 245)
+    label.TextSize = 12
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    
+    local switch = Instance.new("TextButton")
+    switch.Parent = frame
+    switch.BackgroundColor3 = defaultState and Color3.fromRGB(46, 204, 113) or Color3.fromRGB(45, 52, 68)
+    switch.Position = UDim2.new(1, -45, 0.5, -10)
+    switch.Size = UDim2.new(0, 36, 0, 20)
+    switch.Text = ""
+    
+    local switchCorner = Instance.new("UICorner")
+    switchCorner.CornerRadius = UDim.new(1, 0)
+    switchCorner.Parent = switch
+    
+    local state = defaultState
+    switch.MouseButton1Click:Connect(function()
+        state = not state
+        switch.BackgroundColor3 = state and Color3.fromRGB(46, 204, 113) or Color3.fromRGB(45, 52, 68)
+        callback(state)
+    end)
+end
+
+createToggle(mainTab, "Авто сбор монет", coinsEnabled, function(s) coinsEnabled = s end)
+createToggle(mainTab, "Авто подбор пистолета", autoGunEnabled, function(s) autoGunEnabled = s end)
+
+createToggle(combatTab, "Авто выстрел в Мардера", shootMurderEnabled, function(s) shootMurderEnabled = s end)
+createToggle(combatTab, "Прострел сквозь стены (WallBang)", wallBangEnabled, function(s) wallBangEnabled = s end)
+createToggle(combatTab, "Расширение хитбоксов", hitboxEnabled, function(s) hitboxEnabled = s end)
+createToggle(combatTab, "Флинг Шерифа", flingSheriffEnabled, function(s) flingSheriffEnabled = s end)
+createToggle(combatTab, "Флинг Мардера", flingMurderEnabled, function(s) flingMurderEnabled = s end)
+
+createToggle(movementTab, "Прохождение сквозь стены (NoClip)", noclipEnabled, function(s) noclipEnabled = s end)
+createToggle(movementTab, "Полет (Fly)", flyEnabled, function(s) flyEnabled = s end)
+createToggle(movementTab, "Спидхак / Спид глитч", speedGlitchEnabled, function(s) speedGlitchEnabled = s end)
+createToggle(movementTab, "Бомба-прыжок (Bomb Jump)", bombJumpEnabled, function(s) bombJumpEnabled = s end)
+createToggle(movementTab, "Крутилка (Spinbot)", spinEnabled, function(s) spinEnabled = s end)
+createToggle(movementTab, "Анти-Аим (Jitter)", antiAimEnabled, function(s) antiAimEnabled = s end)
+
+createToggle(visualsTab, "Включить ESP ролей (Highlight)", espEnabled, function(s) espEnabled = s end)
+createToggle(visualsTab, "Box ESP + Дистанция", boxEspEnabled, function(s) boxEspEnabled = s end)
+createToggle(visualsTab, "Стрелки-указатели (Offscreen Arrows)", arrowEspEnabled, function(s) arrowEspEnabled = s end)
+createToggle(visualsTab, "Godly SkinChanger", skinChangerEnabled, function(s) skinChangerEnabled = s end)
+
+local setBtn = Instance.new("TextButton")
+setBtn.Parent = visualsTab
+setBtn.BackgroundColor3 = Color3.fromRGB(24, 30, 42)
+setBtn.Size = UDim2.new(0.96, 0, 0, 36)
+setBtn.Font = Enum.Font.GothamSemibold
+setBtn.Text = " 📦 Сет: " .. godlySets[currentSetIndex]
+setBtn.TextColor3 = Color3.fromRGB(255, 200, 80)
+setBtn.TextSize = 12
+setBtn.TextXAlignment = Enum.TextXAlignment.Left
+
+local setCorner = Instance.new("UICorner")
+setCorner.CornerRadius = UDim.new(0, 8)
+setCorner.Parent = setBtn
+
+setBtn.MouseButton1Click:Connect(function()
+    currentSetIndex = currentSetIndex % #godlySets + 1
+    setBtn.Text = " 📦 Сет: " .. godlySets[currentSetIndex]
+end)
+
+local contactLabel = Instance.new("TextLabel")
+contactLabel.Parent = settingsTab
+contactLabel.BackgroundColor3 = Color3.fromRGB(24, 30, 42)
+contactLabel.Size = UDim2.new(0.96, 0, 0, 36)
+contactLabel.Font = Enum.Font.GothamBold
+contactLabel.Text = " 💬 Связаться: @Aloeverakk (telegram)"
+contactLabel.TextColor3 = Color3.fromRGB(100, 200, 255)
+contactLabel.TextSize = 11
+contactLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+local contactCorner = Instance.new("UICorner")
+contactCorner.CornerRadius = UDim.new(0, 8)
+contactCorner.Parent = contactLabel
+
+------------------------------------------------------------------
+-- ЛОГИКА И ЦИКЛ
+------------------------------------------------------------------
+local function getPlayerRole(player)
+    if not player.Character then return "Innocent" end
+    local backpack = player:FindFirstChild("Backpack")
+    local character = player.Character
+    local items = {}
+    if backpack then for _, item in ipairs(backpack:GetChildren()) do table.insert(items, item.Name) end end
+    for _, item in ipairs(character:GetChildren()) do table.insert(items, item.Name) end
+    for _, name in ipairs(items) do
+        if name == "Gun" or name == "Revolver" then return "Sheriff"
+        elseif name == "Knife" then return "Murderer" end
+    end
+    return "Innocent"
+end
+
+local function applySkinChanger()
+    if not skinChangerEnabled then return end
+    local activeSetName = godlySets[currentSetIndex]
+    local containers = {LocalPlayer.Backpack, LocalPlayer.Character}
+    for _, container in ipairs(containers) do
+        if container then
+            for _, item in ipairs(container:GetChildren()) do
+                if item:IsA("Tool") then
+                    if item.Name == "Knife" then item.Name = "Corrupt Knife"
+                    elseif item.Name == "Gun" or item.Name == "Revolver" then item.Name = "Corrupt Gun" end
+                end
+            end
+        end
+    end
+end
+
+UserInputService.JumpRequest:Connect(function()
+    if bombJumpEnabled then
+        local character = LocalPlayer.Character
+        if character and character:FindFirstChild("HumanoidRootPart") then
+            local rootPart = character.HumanoidRootPart
+            rootPart.Velocity = Vector3.new(rootPart.Velocity.X, 85, rootPart.Velocity.Z)
+        end
+    end
+end)
+
+RunService.Stepped:Connect(function()
+    local character = LocalPlayer.Character
+    if not character then return end
+    local rootPart = character:FindFirstChild("HumanoidRootPart")
+    local humanoid = character:FindFirstChild("Humanoid")
+    
+    if espEnabled then
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer and player.Character then
+                local hl = espCache[player] or Instance.new("Highlight", CoreGui)
+                hl.Adornee = player.Character
+                espCache[player] = hl
+                local role = getPlayerRole(player)
+                hl.FillColor = role == "Murderer" and Color3.fromRGB(255, 0, 0) or (role == "Sheriff" and Color3.fromRGB(0, 0, 255) or Color3.fromRGB(0, 255, 0))
+            end
+        end
+    else
+        for player, hl in pairs(espCache) do hl:Destroy(); espCache[player] = nil end
+    end
+    
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("Head") then
+            local head = player.Character.Head
+            local existingGui = head:FindFirstChild("T1mog_BoxESP")
+            
+            if boxEspEnabled then
+                if not existingGui then
+                    local bg = Instance.new("BillboardGui")
+                    bg.Name = "T1mog_BoxESP"
+                    bg.Size = UDim2.new(0, 100, 0, 50)
+                    bg.StudsOffset = Vector3.new(0, 2.5, 0)
+                    bg.AlwaysOnTop = true
+                    bg.Parent = head
+                    
+                    local txt = Instance.new("TextLabel")
+                    txt.Name = "Info"
+                    txt.Size = UDim2.new(1, 0, 1, 0)
+                    txt.BackgroundTransparency = 1
+                    txt.Font = Enum.Font.GothamBold
+                    txt.TextSize = 11
+                    txt.TextColor3 = Color3.fromRGB(255, 255, 255)
+                    txt.TextStrokeTransparency = 0.5
+                    txt.Parent = bg
+                end
+                
+                local info = existingGui:FindFirstChild("Info")
+                if info and rootPart and player.Character:FindFirstChild("HumanoidRootPart") then
+                    local dist = math.floor((rootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude)
+                    info.Text = player.Name .. "\n[" .. dist .. " studs]"
+                end
+            else
+                if existingGui then existingGui:Destroy() end
+            end
+        end
+    end
+    
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local pRoot = player.Character.HumanoidRootPart
+            local arrowGui = arrowCache[player]
+            
+            if arrowEspEnabled then
+                if not arrowGui then
+                    arrowGui = Instance.new("ScreenGui")
+                    arrowGui.Name = "T1mog_Arrow_" .. player.Name
+                    arrowGui.Parent = CoreGui
+                    
+                    local arrowLabel = Instance.new("TextLabel")
+                    arrowLabel.Name = "Arrow"
+                    arrowLabel.Size = UDim2.new(0, 30, 0, 30)
+                    arrowLabel.AnchorPoint = Vector2.new(0.5, 0.5)
+                    arrowLabel.BackgroundTransparency = 1
+                    arrowLabel.Font = Enum.Font.GothamBold
+                    arrowLabel.Text = "▲"
+                    arrowLabel.TextSize = 18
+                    arrowLabel.TextColor3 = getPlayerRole(player) == "Murderer" and Color3.fromRGB(255, 0, 0) or Color3.fromRGB(255, 255, 255)
+                    arrowLabel.Parent = arrowGui
+                    
+                    arrowCache[player] = arrowGui
+                end
+                
+                local arrow = arrowGui:FindFirstChild("Arrow")
+                if arrow and rootPart then
+                    local _, onScreen = Camera:WorldToViewportPoint(pRoot.Position)
+                    if not onScreen then
+                        arrow.Visible = true
+                        local camCF = Camera.CFrame
+                        local relPos = camCF:PointToObjectSpace(pRoot.Position)
+                        local angle = math.atan2(relPos.X, relPos.Z)
+                        local radius = 180
+                        local screenCenter = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+                        
+                        local pos = screenCenter + Vector2.new(math.sin(angle) * radius, -math.cos(angle) * radius)
+                        arrow.Position = UDim2.new(0, pos.X, 0, pos.Y)
+                        arrow.Rotation = math.deg(angle) + 180
+                    else
+                        arrow.Visible = false
+                    end
+                end
+            else
+                if arrowGui then arrowGui:Destroy(); arrowCache[player] = nil end
+            end
+        end
+    end
+    
+    if wallBangEnabled then
+        for _, obj in ipairs(Workspace:GetDescendants()) do
+            if obj:IsA("BasePart") then obj.CanQuery = false end
+        end
+    end
+    
+    if noclipEnabled then
+        for _, part in ipairs(character:GetDescendants()) do
+            if part:IsA("BasePart") then part.CanCollide = false end
+        end
+    end
+    
+    if hitboxEnabled then
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                player.Character.HumanoidRootPart.Size = Vector3.new(4, 4, 4)
+            end
+        end
+    end
+    
+    if coinsEnabled and rootPart then
+        for _, obj in ipairs(Workspace:GetDescendants()) do
+            if (obj.Name == "Coin_Server" or obj.Name == "Coin") and obj:IsA("BasePart") then
+                rootPart.CFrame = obj.CFrame
+                task.wait(0.1)
+                break
+            end
+        end
+    end
+    
+    if speedGlitchEnabled and humanoid and rootPart then
+        if humanoid.MoveDirection.Magnitude > 0 then
+            character:TranslateBy(humanoid.MoveDirection * 0.5)
+        end
+    end
+    
+    if autoGunEnabled and rootPart then
+        for _, obj in ipairs(Workspace:GetDescendants()) do
+            if (obj.Name == "GunDrop" or obj.Name == "Gun") and obj:IsA("BasePart") then
+                rootPart.CFrame = obj.CFrame
+                task.wait(0.1)
+                break
+            end
+        end
+    end
+    
+    if skinChangerEnabled then
+        applySkinChanger()
+    end
+end)
